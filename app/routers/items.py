@@ -19,10 +19,49 @@ def get_items(db: Session = Depends(get_db), limit: int = 10, offset: int = 0, s
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.ItemBase)
-def add_items(item: schemas.ItemCreate, db: Session = Depends(get_db)):
+def add_items(item: schemas.ItemCreate, db: Session = Depends(get_db),
+              current_admin: int = Depends(oauth2.get_current_user)):
 
     new_item = models.Item(**item.model_dump())
     db.add(new_item)
     db.commit()
     db.refresh(new_item)
     return new_item
+
+
+@router.get("/{id}", response_model=schemas.ItemBase)
+def get_post(id: int, db: Session = Depends(get_db)):
+
+    item = db.query(models.Item).filter(id == models.Item.id).first()
+
+    if not item:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"item with id: {id} was not found")
+    return item
+
+
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_item(id: int, db: Session = Depends(get_db), admin_user: int = Depends(oauth2.get_current_user)):
+    item_query = db.query(models.Item).filter(id == models.Item.id)
+    item = item_query.first()
+
+    if item is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"item with id: {id} does not exist")
+
+    item_query.delete(synchronize_session=False)
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.put("/{id}", response_model=schemas.ItemBase)
+def update_item(id: int, updated_item: schemas.ItemCreate, db: Session = Depends(get_db),
+                current_user: int = Depends(oauth2.get_current_user)):
+    item_query = db.query(models.Item).filter(id == models.Item.id)
+    item = item_query.first()
+
+    if item is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"item with id: {id} does not exist")
+
+    item_query.update(updated_item.model_dump(), synchronize_session=False)
+    db.commit()
+
+    return item_query.first()
