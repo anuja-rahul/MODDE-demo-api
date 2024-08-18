@@ -39,7 +39,23 @@ class UserOut(BaseModel):
         from_attributes = True
 
 
-class UserLogin(BaseModel):
+class AdminCreate(BaseModel):
+    name: str
+    email: EmailStr
+    password: str
+
+
+class AdminOut(BaseModel):
+    id: int
+    name: str
+    email: EmailStr
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class AdminLogin(BaseModel):
     email: EmailStr
     password: str
 
