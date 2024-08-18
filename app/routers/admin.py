@@ -3,6 +3,7 @@ from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from .. import database, schemas, models, utils, oauth2
 from ..database import get_db
+from  ..config import settings
 
 
 router = APIRouter(
@@ -13,6 +14,7 @@ router = APIRouter(
 
 @router.post("/login", response_model=schemas.Token)
 def login(admin_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
+
     admin = db.query(models.Admin).filter(admin_credentials.username == models.Admin.email).first()
 
     if not admin:
@@ -29,22 +31,24 @@ def login(admin_credentials: OAuth2PasswordRequestForm = Depends(), db: Session 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.AdminOut)
 def create_admin(admin: schemas.AdminCreate, db: Session = Depends(get_db)):
+    if admin.token == settings.ADMIN_TOKEN:
+        try:
+            hashed_password = utils.hash(admin.password)
+            admin.password = hashed_password
+            new_admin = models.Admin(name=admin.name, email=admin.email, password=hashed_password)
+            db.add(new_admin)
+            db.commit()
+            db.refresh(new_admin)
+        except Exception:
+            raise HTTPException(status_code=status.HTTP_226_IM_USED, detail=Exception)
 
-    try:
-        hashed_password = utils.hash(admin.password)
-        admin.password = hashed_password
-        new_admin = models.Admin(**admin.model_dump())
-        db.add(new_admin)
-        db.commit()
-        db.refresh(new_admin)
-    except Exception:
-        raise HTTPException(status_code=status.HTTP_226_IM_USED, detail=Exception)
-
-    return new_admin
+        return new_admin
+    else:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Invalid Credentials")
 
 
 @router.get("/{id}", response_model=schemas.AdminOut)
-def get_admin(id: int, db: Session = Depends(get_db)):
+def get_admin(id: int, db: Session = Depends(get_db), admin_user: int = Depends(oauth2.get_current_user)):
     admin = db.query(models.Admin).filter(id == models.Admin.id).first()
     if not admin:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"admin with id: {id} was not found")
