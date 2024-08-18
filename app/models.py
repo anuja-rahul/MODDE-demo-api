@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, Numeric
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 from sqlalchemy.sql.expression import text
 # from sqlalchemy.orm import relationship
@@ -12,7 +12,8 @@ class Item(Base):
     title = Column(String, nullable=False, unique=True)
     description = Column(String, nullable=False)
     stock = Column(Integer, nullable=False, server_default="0")
-    price = Column(Integer, nullable=False, server_default="0")
+    price = Column(Numeric(10, 2), nullable=False, server_default="0.00")
+    img_url = Column(String, nullable=False, server_default="https://modde.com/item_placeholder.png")
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
     # owner = relationship("User")
 

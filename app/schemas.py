@@ -1,6 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
+# from decimal import Decimal
 
 
 class ItemBase(BaseModel):
@@ -8,6 +9,8 @@ class ItemBase(BaseModel):
     title: str
     description: str
     stock: int
+    price: float
+    img_url: str
     created_at: datetime
 
     class Config:
@@ -18,6 +21,8 @@ class ItemCreate(BaseModel):
     title: str
     description: str
     stock: Optional[int]
+    price: float
+    img_url: Optional[str]
 
 
 class UserCreate(BaseModel):
