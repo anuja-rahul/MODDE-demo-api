@@ -12,6 +12,7 @@ class Item(Base):
     title = Column(String, nullable=False, unique=True)
     description = Column(String, nullable=False)
     stock = Column(Integer, nullable=False, server_default="0")
+    price = Column(Integer, nullable=False, server_default="0")
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
     # owner = relationship("User")
 

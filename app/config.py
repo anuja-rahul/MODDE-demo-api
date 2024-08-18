@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     USER: str
     PASSWORD: str
     PORT: str
+    ADMIN_TOKEN: str
 
     class Config:
         env_file = ".env"

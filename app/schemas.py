@@ -4,13 +4,20 @@ from datetime import datetime
 
 
 class ItemBase(BaseModel):
-    id: Optional[int]
+    id: int
     title: str
     description: str
     stock: int
+    created_at: datetime
 
     class Config:
         from_attributes = True
+
+
+class ItemCreate(BaseModel):
+    title: str
+    description: str
+    stock: Optional[int]
 
 
 class UserCreate(BaseModel):
