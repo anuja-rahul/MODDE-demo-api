@@ -2,8 +2,8 @@ from typing import List, Optional
 from ..database import get_db
 from .. import models, schemas, oauth2
 from sqlalchemy.orm import Session
-from sqlalchemy import func
 from fastapi import Response, status, HTTPException, Depends, APIRouter
+# from sqlalchemy import func
 
 router = APIRouter(
     prefix="/items",
@@ -20,7 +20,7 @@ def get_items(db: Session = Depends(get_db), limit: int = 10, offset: int = 0, s
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.ItemBase)
 def add_items(item: schemas.ItemCreate, db: Session = Depends(get_db),
-              current_admin: int = Depends(oauth2.get_current_user)):
+              current_admin: int = Depends(oauth2.get_current_admin)):
 
     new_item = models.Item(**item.model_dump())
     db.add(new_item)
@@ -40,7 +40,7 @@ def get_post(id: int, db: Session = Depends(get_db)):
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_item(id: int, db: Session = Depends(get_db), admin_user: int = Depends(oauth2.get_current_user)):
+def delete_item(id: int, db: Session = Depends(get_db), current_admin: int = Depends(oauth2.get_current_admin)):
     item_query = db.query(models.Item).filter(id == models.Item.id)
     item = item_query.first()
 
@@ -54,7 +54,7 @@ def delete_item(id: int, db: Session = Depends(get_db), admin_user: int = Depend
 
 @router.put("/{id}", response_model=schemas.ItemBase)
 def update_item(id: int, updated_item: schemas.ItemCreate, db: Session = Depends(get_db),
-                current_user: int = Depends(oauth2.get_current_user)):
+                current_admin: int = Depends(oauth2.get_current_admin)):
     item_query = db.query(models.Item).filter(id == models.Item.id)
     item = item_query.first()
 

@@ -40,7 +40,6 @@ class UserOut(BaseModel):
 
 
 class AdminCreate(BaseModel):
-    token: str
     name: str
     email: EmailStr
     password: str
