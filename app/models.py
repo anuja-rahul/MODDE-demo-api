@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Numeric, ForeignKey
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 from sqlalchemy.sql.expression import text
-# from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship
 from .database import Base
 
 
@@ -15,7 +15,7 @@ class Item(Base):
     price = Column(Numeric(10, 2), nullable=False, server_default="0.00")
     img_url = Column(String, nullable=False, server_default="https://modde.com/item_placeholder.png")
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
-    # owner = relationship("User")
+    added_by = relationship("Admin")
 
 
 class User(Base):
