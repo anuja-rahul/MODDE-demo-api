@@ -12,6 +12,7 @@ class ItemBase(BaseModel):
     price: float
     img_url: str
     created_at: datetime
+    added_by: int
 
     class Config:
         from_attributes = True

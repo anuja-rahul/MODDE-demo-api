@@ -15,7 +15,8 @@ class Item(Base):
     price = Column(Numeric(10, 2), nullable=False, server_default="0.00")
     img_url = Column(String, nullable=False, server_default="https://modde.com/item_placeholder.png")
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
-    added_by = relationship("Admin")
+    added_by = Column(Integer, ForeignKey("admins.id"), nullable=False, server_default="2")
+    admin = relationship("Admin")
 
 
 class User(Base):

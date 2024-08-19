@@ -21,12 +21,15 @@ def get_items(db: Session = Depends(get_db), limit: int = 10, offset: int = 0, s
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.ItemBase)
 def add_items(item: schemas.ItemCreate, db: Session = Depends(get_db),
               current_admin: int = Depends(oauth2.get_current_admin)):
-
-    new_item = models.Item(**item.model_dump())
-    db.add(new_item)
-    db.commit()
-    db.refresh(new_item)
-    return new_item
+    try:
+        new_item = models.Item(added_by=current_admin.id, **item.model_dump())
+        db.add(new_item)
+        db.commit()
+        db.refresh(new_item)
+        return new_item
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_226_IM_USED,
+                            detail=f"Item with name: [{item.title}] already exists")
 
 
 @router.get("/{id}", response_model=schemas.ItemBase)
