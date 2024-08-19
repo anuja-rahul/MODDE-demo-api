@@ -4,7 +4,7 @@ from fastapi.security import APIKeyHeader
 from sqlalchemy.orm import Session
 from .. import database, schemas, models, utils, oauth2
 from ..database import get_db
-from  ..config import settings
+from ..config import settings
 
 
 router = APIRouter(
@@ -16,9 +16,9 @@ admin_header_scheme = APIKeyHeader(name="admin_token")
 
 
 @router.post("/login", response_model=schemas.Token)
-def login(admin_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
-    admin = db.query(models.Admin).filter(admin_credentials.username == models.Admin.email).first()
+def admin_login(admin_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
 
+    admin = db.query(models.Admin).filter(admin_credentials.username == models.Admin.email).first()
     if not admin:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Invalid Credentials")
     if not utils.verify(admin_credentials.password, admin.password):

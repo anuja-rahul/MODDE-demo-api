@@ -33,7 +33,7 @@ def add_items(item: schemas.ItemCreate, db: Session = Depends(get_db),
 
 
 @router.get("/{id}", response_model=schemas.ItemBase)
-def get_post(id: int, db: Session = Depends(get_db)):
+def get_item(id: int, db: Session = Depends(get_db)):
 
     item = db.query(models.Item).filter(id == models.Item.id).first()
 

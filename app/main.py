@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import items, admin
+from .routers import items, admin, users, auth
 from . import models
 from .database import engine
 
@@ -26,8 +26,8 @@ app.add_middleware(
 
 app.include_router(items.router)
 app.include_router(admin.router)
-# app.include_router(auth.router)
-# app.include_router(users.router)
+app.include_router(users.router)
+app.include_router(auth.router)
 
 
 @app.get("/")
