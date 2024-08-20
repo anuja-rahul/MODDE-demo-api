@@ -32,4 +32,4 @@ app.include_router(auth.router)
 
 @app.get("/")
 async def root():
-    return {"message": "This is the MODDE demo API"}
+    return {"message": "Welcome to 'MODDE demo API'"}
