@@ -65,6 +65,15 @@ class CartBase(BaseModel):
     created_at: datetime
 
 
+class CartOut(BaseModel):
+    id: int
+    created_at: datetime
+    user: UserOut
+
+    class Config:
+        from_attributes = True
+
+
 class AdminCreate(BaseModel):
     name: str
     email: EmailStr
