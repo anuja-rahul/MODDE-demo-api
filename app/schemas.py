@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Literal
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 # from decimal import Decimal
@@ -11,6 +11,9 @@ class ItemBase(BaseModel):
     stock: int
     price: float
     img_url: str
+    discount: Optional[int]
+    gender: Literal["male", "female", "unisex"]
+    type: Literal["top", "bottom"]
     created_at: datetime
     added_by: int
 
@@ -24,6 +27,8 @@ class ItemCreate(BaseModel):
     stock: Optional[int]
     price: float
     img_url: Optional[str]
+    gender: Literal["male", "female", "unisex"]
+    type: Literal["top", "bottom"]
 
 
 class UserCreate(BaseModel):
@@ -52,6 +57,12 @@ class UserOut(BaseModel):
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
+
+class CartBase(BaseModel):
+    id: int
+    user_id: int
+    created_at: datetime
 
 
 class AdminCreate(BaseModel):

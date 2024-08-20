@@ -27,7 +27,8 @@ def add_items(item: schemas.ItemCreate, db: Session = Depends(get_db),
         db.commit()
         db.refresh(new_item)
         return new_item
-    except Exception:
+    except Exception as e:
+        print(f"{e}")
         raise HTTPException(status_code=status.HTTP_226_IM_USED,
                             detail=f"Item with name: [{item.title}] already exists")
 

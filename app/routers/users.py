@@ -1,6 +1,6 @@
 from ..database import get_db
 from sqlalchemy.orm import Session
-from .. import models, schemas, utils, oauth2
+from .. import models, schemas, utils
 from fastapi import status, HTTPException, Depends, APIRouter, Response
 from fastapi.security import APIKeyHeader
 from ..config import settings
@@ -25,6 +25,11 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db), key: st
             db.add(new_user)
             db.commit()
             db.refresh(new_user)
+
+            new_cart = models.Cart(user_id=new_user.id)
+            db.add(new_cart)
+            db.commit()
+
         except Exception:
             raise HTTPException(status_code=status.HTTP_226_IM_USED, detail=f"email or username already in use.")
 
