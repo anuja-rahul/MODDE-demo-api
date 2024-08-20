@@ -30,6 +30,23 @@ class User(Base):
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
 
 
+class Cart(Base):
+    __tablename__ = "carts"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True)
+    created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
+
+
+class CartItem(Base):
+    __tablename__ = "cart_items"
+
+    id = Column(Integer, ForeignKey("carts.id", ondelete="CASCADE"), primary_key=True, nullable=False)
+    item_id = Column(Integer, ForeignKey("items.id", ondelete="CASCADE"), nullable=False)
+    quantity = Column(Integer, nullable=False, server_default="1")
+    created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
+
+
 class Admin(Base):
     __tablename__ = "admins"
 
