@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import items, admin, users, auth
+from .routers import items, admin, users, auth, cart
 from . import models
 from .database import engine
 
@@ -28,6 +28,7 @@ app.include_router(items.router)
 app.include_router(admin.router)
 app.include_router(users.router)
 app.include_router(auth.router)
+app.include_router(cart.router)
 
 
 @app.get("/")
