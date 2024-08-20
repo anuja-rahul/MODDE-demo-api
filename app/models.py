@@ -45,7 +45,7 @@ class CartItem(Base):
     __tablename__ = "cart_items"
 
     id = Column(Integer, ForeignKey("carts.id", ondelete="CASCADE"), primary_key=True, nullable=False)
-    item_id = Column(Integer, ForeignKey("items.id", ondelete="CASCADE"), nullable=False)
+    item_id = Column(Integer, ForeignKey("items.id", ondelete="CASCADE"), primary_key=True, nullable=False)
     quantity = Column(Integer, nullable=False, server_default="1")
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
 

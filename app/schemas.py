@@ -11,7 +11,7 @@ class ItemBase(BaseModel):
     stock: int
     price: float
     img_url: str
-    discount: Optional[int]
+    discount: Optional[int] = 0
     gender: Literal["male", "female", "unisex"]
     type: Literal["top", "bottom"]
     created_at: datetime
@@ -27,6 +27,7 @@ class ItemCreate(BaseModel):
     stock: Optional[int]
     price: float
     img_url: Optional[str]
+    discount: Optional[int] = 0
     gender: Literal["male", "female", "unisex"]
     type: Literal["top", "bottom"]
 
@@ -35,6 +36,11 @@ class UserCreate(BaseModel):
     name: str
     email: EmailStr
     password: str
+
+
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    password: Optional[str] = None
 
 
 # class UserUpdate(BaseModel):
