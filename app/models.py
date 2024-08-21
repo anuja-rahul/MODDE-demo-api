@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Numeric, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Numeric, ForeignKey, Boolean, PrimaryKeyConstraint
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 from sqlalchemy.sql.expression import text
 from sqlalchemy.orm import relationship
@@ -39,15 +39,22 @@ class Cart(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True)
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
+    owner = relationship("User")
 
 
 class CartItem(Base):
     __tablename__ = "cart_items"
 
-    id = Column(Integer, ForeignKey("carts.id", ondelete="CASCADE"), primary_key=True, nullable=False)
-    item_id = Column(Integer, ForeignKey("items.id", ondelete="CASCADE"), primary_key=True, nullable=False)
+    id = Column(Integer, ForeignKey("carts.id", ondelete="CASCADE"), nullable=False)
+    item_id = Column(Integer, ForeignKey("items.id", ondelete="CASCADE"), nullable=False)
     quantity = Column(Integer, nullable=False, server_default="1")
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
+    cart = relationship("Cart")
+    item = relationship("Item")
+
+    __table_args__ = (
+        PrimaryKeyConstraint('id', 'item_id', name='cart_item_pk'),
+    )
 
 
 class Admin(Base):

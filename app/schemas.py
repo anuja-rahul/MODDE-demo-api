@@ -1,4 +1,4 @@
-from typing import Optional, Literal
+from typing import Optional, Literal, List
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 # from decimal import Decimal
@@ -71,10 +71,34 @@ class CartBase(BaseModel):
     created_at: datetime
 
 
-class CartOut(BaseModel):
+class CartItemBase(BaseModel):
     id: int
+    item_id: int
+    quantity: int = Field(..., ge=0, le=99)
     created_at: datetime
-    user: UserOut
+    item: ItemBase
+
+    class Config:
+        from_attributes = True
+
+
+class CartItemOut(BaseModel):
+    item_id: int
+    quantity: int = Field(..., ge=0, le=99)
+    created_at: datetime
+    item: ItemBase
+
+    class Config:
+        from_attributes = True
+
+
+class CartOut(CartBase):
+    items: List[CartItemOut]
+
+
+class CartItemCreate(BaseModel):
+    item_id: int
+    quantity: int = Field(..., ge=0, le=99)
 
     class Config:
         from_attributes = True
