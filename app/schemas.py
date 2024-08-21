@@ -21,6 +21,21 @@ class ItemBase(BaseModel):
         from_attributes = True
 
 
+class ItemOut(BaseModel):
+    id: int
+    title: str
+    description: str
+    stock: int
+    price: float
+    img_url: str
+    discount: Optional[int] = 0
+    gender: Literal["male", "female", "unisex"]
+    type: Literal["top", "bottom"]
+
+    class Config:
+        from_attributes = True
+
+
 class ItemCreate(BaseModel):
     title: str
     description: str
@@ -84,15 +99,16 @@ class CartItemBase(BaseModel):
 
 class CartItemOut(BaseModel):
     item_id: int
-    quantity: int = Field(..., ge=0, le=99)
-    created_at: datetime
-    item: ItemBase
+    quantity: int
+    item: ItemOut
 
     class Config:
         from_attributes = True
 
 
-class CartOut(CartBase):
+class CartOut(BaseModel):
+    id: int
+    user_id: int
     items: List[CartItemOut]
 
 

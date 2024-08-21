@@ -20,7 +20,7 @@ def get_cart(db: Session = Depends(get_db), user: int = Depends(oauth2.get_curre
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Cart for user [{user.id}] not found")
     cart_items = db.query(models.CartItem).filter(models.CartItem.id == cart.id).all()
-    # print(cart.id)
+
     return {
         "id": cart.id,
         "user_id": cart.user_id,
