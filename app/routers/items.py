@@ -26,7 +26,18 @@ def add_items(item: schemas.ItemCreate, db: Session = Depends(get_db),
         db.add(new_item)
         db.commit()
         db.refresh(new_item)
+
+        new_sale: schemas.SaleCreate = schemas.SaleCreate(
+            id=new_item.id,
+            owner_id=current_admin.id,
+            quantity=0
+        )
+        sale_record = models.Sales(**new_sale.model_dump())
+        db.add(sale_record)
+        db.commit()
+
         return new_item
+
     except Exception as e:
         print(f"{e}")
         raise HTTPException(status_code=status.HTTP_226_IM_USED,

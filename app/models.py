@@ -57,6 +57,15 @@ class CartItem(Base):
     )
 
 
+class Sales(Base):
+    __tablename__ = "sales"
+
+    id = Column(Integer, ForeignKey("items.id", ondelete="CASCADE"), nullable=False, primary_key=True)
+    owner_id = Column(Integer, ForeignKey("admins.id", ondelete="CASCADE"), nullable=False)
+    quantity = Column(Integer, nullable=False, server_default="0")
+    item = relationship("Item")
+
+
 class Admin(Base):
     __tablename__ = "admins"
 
@@ -65,4 +74,3 @@ class Admin(Base):
     email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
-

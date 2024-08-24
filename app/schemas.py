@@ -114,10 +114,23 @@ class CartOut(BaseModel):
 
 class CartItemCreate(BaseModel):
     item_id: int
-    quantity: int = Field(..., ge=0, le=99)
+    quantity: int = Field(..., ge=0, le=100)
 
     class Config:
         from_attributes = True
+
+
+class SaleCreate(BaseModel):
+    id: int
+    owner_id: int
+    quantity: Optional[int] = 0
+
+    class Config:
+        from_attributes = True
+
+
+class SaleOut(SaleCreate):
+    item: ItemOut
 
 
 class AdminCreate(BaseModel):
