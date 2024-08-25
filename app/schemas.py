@@ -130,7 +130,15 @@ class SaleCreate(BaseModel):
 
 
 class SaleOut(SaleCreate):
+    updated_at: datetime
     item: ItemOut
+
+
+class SaleOutMin(BaseModel):
+    id: int
+    owner_id: int
+    quantity: int
+    updated_at: datetime
 
 
 class AdminCreate(BaseModel):

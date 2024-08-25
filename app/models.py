@@ -57,12 +57,13 @@ class CartItem(Base):
     )
 
 
-class Sales(Base):
+class Sale(Base):
     __tablename__ = "sales"
 
     id = Column(Integer, ForeignKey("items.id", ondelete="CASCADE"), nullable=False, primary_key=True)
     owner_id = Column(Integer, ForeignKey("admins.id", ondelete="CASCADE"), nullable=False)
     quantity = Column(Integer, nullable=False, server_default="0")
+    updated_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
     item = relationship("Item")
 
 
