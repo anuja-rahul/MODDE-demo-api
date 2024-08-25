@@ -28,31 +28,33 @@ def get_cart(db: Session = Depends(get_db), user: int = Depends(oauth2.get_curre
         "items": cart_items
     }
 
-# TODO: Fix this
 
-
-@router.put("/", response_model=schemas.CartBase, status_code=status.HTTP_200_OK)
+@router.put("/", response_model=schemas.CartItemOut, status_code=status.HTTP_200_OK)
 def update_cart(updated_items: schemas.CartItemCreate, db: Session = Depends(get_db),
                 user: int = Depends(oauth2.get_current_user)):
-    try:
-        cart = db.query(models.Cart).filter(models.Cart.user_id == user.id).first()
 
-        if not cart:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                detail=f"Cart for user [{user.id}] not found")
-        cart_id = int(cart.id)
+    cart_query = db.query(models.Cart).filter(models.Cart.user_id == user.id)
+    cart = cart_query.first()
 
-        cart_item_query = db.query(models.CartItem).filter(cart.id == models.CartItem.id,
-                                                           updated_items.item_id == models.CartItem.item_id)
-        cart_item = cart_item_query.first()
+    cart_id = int(cart.id)
 
-        if cart_item is None:
-            new_item = models.CartItem(id=cart_id, **updated_items.model_dump())
-            db.add(new_item)
-            db.commit()
-            db.refresh(new_item)
-        else:
-            cart_item_query.update(updated_items.model_dump())
+    if not cart:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Cart for user [{user.id}] not found")
 
-    except Exception as e:
-        print(f'{e}')
+    cart_item_query = db.query(models.CartItem).filter(cart.id == models.CartItem.id,
+                                                       updated_items.item_id == models.CartItem.item_id)
+    cart_item = cart_item_query.first()
+
+    if cart_item is None:
+        new_item = models.CartItem(id=cart_id, **updated_items.model_dump())
+        db.add(new_item)
+        db.commit()
+        db.refresh(new_item)
+        return new_item
+    else:
+        cart_item_query.update(updated_items.model_dump())
+        db.commit()
+        return cart_item
+
+
